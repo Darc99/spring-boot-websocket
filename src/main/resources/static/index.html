@@ -8,7 +8,7 @@
     <script src="/webjars/sockjs-client/sockjs.min.js"></script>
     <script src="/webjars/stomp-websocket/stomp.min.js"></script>
     <script type="text/javascript">
-        var stompClient = null;
+        let stompClient = null;
 
         function setConnected(connected) {
             $("#connect").prop("disabled", connected);
@@ -23,13 +23,13 @@
         }
 
         function connect() {
-            var socket = new SockJS('/chat');
+            let socket = new SockJS('/gs-guide-websocket');
             stompClient = Stomp.over(socket);
             stompClient.connect({}, function (frame) {
                 setConnected(true);
                 console.log('Connected: ' + frame);
-                stompClient.subscribe('/topic/greetings', function (greeting) {
-                    showGreeting(JSON.parse(greeting.body).content);
+                stompClient.subscribe('/topic/user', function (getUser) {
+                    showGreeting(JSON.parse(getUser.body).content);
                 });
             });
         }
@@ -43,7 +43,7 @@
         }
 
         function sendName() {
-            stompClient.send("/app/hello", {}, JSON.stringify({'name': $("#name").val()}));
+            stompClient.send("/app/user", {}, JSON.stringify({'name': $("#name").val()}));
         }
 
         function showGreeting(message) {
